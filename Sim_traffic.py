@@ -61,7 +61,6 @@ class TrafficDatabase:  # Connection to database
             
 
 
-
 class TrafficSimulator:  # Handles simulation logic
     def __init__(self, database):
         self.database = database
