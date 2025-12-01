@@ -111,6 +111,15 @@ class TrafficSimulator:  # Handles simulation logic
 
                 current_time += interval
 
+    def _get_speed_limit(self, area_type):
+        if area_type.lower() == "school zone":
+            return 40
+        elif area_type.lower() == "residential":
+            return 50
+        else:
+            return 60  # default for arterial/other
+    
+
 def main():
     database = TrafficDatabase("traffic_simulation.db")
     database.connect()
