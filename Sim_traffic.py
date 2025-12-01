@@ -77,9 +77,40 @@ class TrafficSimulator:  # Handles simulation logic
         self.simulate_day()
         print("Traffic simulation complete.")
     def simulate_day(self):
+        locations = self.database.get_locations()
         if not locations:
             print("No locations found in the database. Add locations first.")
             return
+        start_dt = datetime(2025, 1, 15, 0, 0)
+        end_dt = datetime(2025, 1, 16, 0, 0)   # exclusive
+        interval = timedelta(minutes=15)
+
+        for location_id, name, area_type in locations:
+            speed_limit = self._get_speed_limit(area_type)
+            current_time = start_dt
+            
+            print(f"Simulating for locatio9n: {name} ({area_type}), limit{speed_limit} km/h")
+
+            while current_time < end_dt:
+                volume, avg_speed_kmh, pct_speeding = self._generate_reading(
+                    current_time.hour,
+                    area_type,
+                    speed_limit
+                )
+
+                ts_str = current_time.isoformat(timespec="minutes")
+
+                self.database.insert_traffic_record(
+                    location_id=location_id,
+                    ts=ts_str,
+                    volume=volume,
+                    avg_speed_kmh=avg_speed_kmh,
+                    speed_limit_kmh=speed_limit,
+                    pct_speeding=pct_speeding
+                )
+
+                current_time += interval
+
 def main():
     database = TrafficDatabase("traffic_simulation.db")
     database.connect()
