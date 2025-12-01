@@ -1,5 +1,7 @@
 import sqlite3
 from pathlib import Path 
+import random
+from datetime import datetime, timedelta
 
 class TrafficDatabase:  # Connection to database 
     def __init__(self, db_path): 
@@ -49,7 +51,12 @@ class TrafficDatabase:  # Connection to database
 
     def insert_location(self, name, road_name, area_type):
         cursor = self.conn.cursor()  
-
+    def get_locations(self):
+        cursor = self.conn.cursor()
+        cursor.execute("SELECT id, name, area_type FROM locations;")
+        return cursor.fetchall()
+    def insert_traffic_record(self, location_id, ts, volume, avg_speed_kmh,
+                                speed_limit_kmh, pct_speeding): 
         cursor.execute("""
             INSERT INTO locations (name, road_name, area_type)
             VALUES (?, ?, ?)
@@ -66,17 +73,18 @@ class TrafficSimulator:  # Handles simulation logic
         self.database = database
 
     def run(self):
-        print("The traffic simulator is now ready.\nSimulation will go here later.")
-
+        print("Starting traffic simulation for one day...")
+        self.simulate_day()
+        print("Traffic simulation complete.")
 def main():
     database = TrafficDatabase("traffic_simulation.db")
     database.connect()
     database.create_tables()
 
     simulator = TrafficSimulator(database)
-    simulator.run()               # FIX: you wrote "simualtor"
+    simulator.run()               
 
-    database.close()              # FIX: you forgot parentheses
+    database.close()              
 
 if __name__ == "__main__":
     main()
