@@ -76,6 +76,10 @@ class TrafficSimulator:  # Handles simulation logic
         print("Starting traffic simulation for one day...")
         self.simulate_day()
         print("Traffic simulation complete.")
+    def simulate_day(self):
+        if not locations:
+            print("No locations found in the database. Add locations first.")
+            return
 def main():
     database = TrafficDatabase("traffic_simulation.db")
     database.connect()
