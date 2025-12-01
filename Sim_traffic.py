@@ -56,16 +56,16 @@ class TrafficDatabase:  # Connection to database
         cursor.execute("SELECT id, name, area_type FROM locations;")
         return cursor.fetchall()
     def insert_traffic_record(self, location_id, ts, volume, avg_speed_kmh,
-                                speed_limit_kmh, pct_speeding): 
+                          speed_limit_kmh, pct_speeding):
+        cursor = self.conn.cursor()
         cursor.execute("""
-            INSERT INTO locations (name, road_name, area_type)
-            VALUES (?, ?, ?)
-        """, (name, road_name, area_type))
-
+            INSERT INTO traffic_counts (
+                location_id, ts, volume, avg_speed_kmh,
+                speed_limit_kmh, pct_speeding
+            )
+            VALUES (?, ?, ?, ?, ?, ?)
+        """, (location_id, ts, volume, avg_speed_kmh, speed_limit_kmh, pct_speeding))
         self.conn.commit()
-
-        print(f"Inserted location: {name} on {road_name} ({area_type})")
-            
 
 
 class TrafficSimulator:  # Handles simulation logic
