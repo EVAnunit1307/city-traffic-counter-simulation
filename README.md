@@ -1,0 +1,1 @@
+A small learning project built to explore Python OOP, SQL databases, and Power BI visualization by simulating traffic patterns for a fictional city. The project generates realistic traffic data for multiple road types, stores the results in SQLite, and prepares the dataset for analysis and dashboarding.
