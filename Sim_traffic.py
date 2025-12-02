@@ -118,9 +118,37 @@ class TrafficSimulator:  # Handles simulation logic
             return 50
         else:
             return 60  # default for arterial/other
-    
+    def _generate_reading(self, hour, area_type, speed_limit):
+          if 7 <= hour <= 9:          # AM peak
+            base_volume = random.randint(25, 50)
+          elif 16 <= hour <= 18:      # PM peak
+            base_volume = random.randint(30, 55)
+          elif 10 <= hour <= 15:      # daytime
+            base_volume = random.randint(15, 35)
+          elif 19 <= hour <= 21:      # evening
+            base_volume = random.randint(5, 20)
+          else:                       # night
+            base_volume = random.randint(0, 8)  
+          volume = base_volume
+        
+            # Speed behavior by area type
+          if area_type.lower() == "school zone":
+                mean_over = random.uniform(-5, 8)
+          elif area_type.lower() == "residential":
+                mean_over = random.uniform(0, 15)
+          else:  # arterial / other
+                mean_over = random.uniform(5, 20)
 
-def main():
+          avg_speed_kmh = speed_limit + mean_over
+
+              # Estimate percent speeding from how far over the mean is
+          if mean_over <= 0:
+            pct_speeding = random.uniform(0, 10)
+          else:
+            pct_speeding = min(100.0, mean_over * random.uniform(3, 6))
+
+          return volume, avg_speed_kmh, pct_speeding
+    def main():
     database = TrafficDatabase("traffic_simulation.db")
     database.connect()
     database.create_tables()
