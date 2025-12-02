@@ -148,15 +148,24 @@ class TrafficSimulator:  # Handles simulation logic
             pct_speeding = min(100.0, mean_over * random.uniform(3, 6))
 
           return volume, avg_speed_kmh, pct_speeding
-    def main():
-    database = TrafficDatabase("traffic_simulation.db")
-    database.connect()
-    database.create_tables()
+def main():
+        database = TrafficDatabase("traffic_simulation.db")
+        database.connect()
+        database.create_tables()
 
-    simulator = TrafficSimulator(database)
-    simulator.run()               
+        existing_locations = database.get_locations()
+        if not existing_locations:
+            print("No locations found. Inserting default locations...")
+            database.insert_location("School Zone 1", "Birchwood Ave", "School Zone")
+            database.insert_location("Residential Collector", "Maplecrest Cres", "Residential")
+            database.insert_location("Major Arterial", "Rutherford Rd", "Arterial")
+        else:
+            print("Locations already exist, skipping insert.")
 
-    database.close()              
+        simulator = TrafficSimulator(database)
+        simulator.run()               
+
+        database.close()              
 
 if __name__ == "__main__":
     main()
